@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class StatusreportConfig(AppConfig):
+class StatusReportConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "statusReport"
+    name = "StatusReport"
