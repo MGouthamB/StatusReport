@@ -1,5 +1,7 @@
-# from django import forms
-# from .models import Employee, Projects
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from .models import  CustomUser,Projects
 
 # class EmployeeForm(forms.ModelForm):
 #     selected_groups = forms.ModelMultipleChoiceField(
@@ -27,5 +29,7 @@
 
 # class Employeeform()
 
-
-
+class UserForm(UserCreationForm):
+    class Meta:
+        model=CustomUser
+        fields=["username","email",'first_name', 'last_name', 'empType', 'empDept', 'role']

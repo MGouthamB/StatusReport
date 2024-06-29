@@ -1,0 +1,61 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+  
+  .container {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .header, .footer {
+    padding: 10px 0;
+    text-align: center;
+  }
+  
+  .header h1, .footer p {
+    color: white;
+    margin: 0;
+  }
+  
+  .header .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .header .logo img {
+    width: 155px;
+    margin-right: 120px;
+  }
+  
+  .main {
+    flex: 1; /* main content takes up remaining space */
+  }
+  
+  .card-login {
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: auto; 
+  }
+  
+  .card-header {
+    padding: 20px;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+  
+.input-group.form-group {
+    margin-bottom: 20px; /* Add space between input fields */
+}
+
+.bg-maroon {
+    background-color: maroon;
+}
