@@ -5,19 +5,21 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm
 from django.contrib import messages
-# from .forms import EmployeeForm
 
-# Create your views here.
+@login_required
 def registerUser(request):
-    form = UserForm()
-    if request.method=="POST":
-        form=UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponse("Registered")
-        else:
-            return HttpResponse(form.errors.as_json())
-    return render(request,"login.html",{"form":form})
+    if(request.user.role=="EX"):
+        form = UserForm()
+        if request.method=="POST":
+            form=UserForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect("/statusReport/home")
+            else:
+                return HttpResponse(form.errors.as_json())
+        return render(request,"register.html",{"form":form})
+    else:
+        return HttpResponse("No Accesss")
 
 def loginUser(request):
     form=AuthenticationForm()
@@ -25,6 +27,8 @@ def loginUser(request):
         form=AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request,form.get_user())
+            if(request.user.role=="EX"):
+                return redirect("/statusReport/register")
             return redirect("/statusReport/home")
         else:
             messages.error(request,form.errors.as_text())
@@ -36,4 +40,4 @@ def home(request):
 
 def logoutUser(request):
     logout(request)
-    return HttpResponse("Logout Succesfull")
+    return redirect("/statusReport/login")
