@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import  CustomUser,Projects
+from .models import  CustomUser,Projects,Tasks,Projectteams
+from django.contrib.admin.widgets import AdminDateWidget, AdminTimeWidget, AdminSplitDateTime
 
 # class EmployeeForm(forms.ModelForm):
 #     selected_groups = forms.ModelMultipleChoiceField(
@@ -33,3 +34,8 @@ class UserForm(UserCreationForm):
     class Meta:
         model=CustomUser
         fields=["username","email",'first_name', 'last_name', 'empType', 'empDept', 'role']
+
+class CreateTask(forms.ModelForm):
+    class Meta:
+        model=Tasks
+        fields="__all__"

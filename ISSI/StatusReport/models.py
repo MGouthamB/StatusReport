@@ -30,7 +30,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     empDept = models.CharField(max_length=3, choices=DEPARTMENTS)
     role = models.CharField(max_length=2, choices=ROLE)
     USERNAME_FIELD="email"
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'empType', 'empDept', 'role']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'empType', 'empDept', 'role',"username"]
 
 # Group table - which stores project teams in an organization
 class Projects(models.Model):
@@ -50,7 +50,7 @@ class Tasks(models.Model):
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
     startDate = models.DateField(default=timezone.now)
     endDate = models.DateField(default=timezone.now, blank=True)
-    taskName = models.TextField(default="CustomTask")
+    taskName = models.TextField(unique=True)
     status = models.CharField(max_length=10, choices=STATUS, default="start")
     accomplishments = models.TextField(blank=True)
     blockers = models.TextField(blank=True)
@@ -58,13 +58,12 @@ class Tasks(models.Model):
 
 # Managers table
 class Managers(models.Model):
-    manager = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="managers")
-    member = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="members")
-
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    manager = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["manager", "member"], name="unique_manager_member"
+                fields=["manager", "project"], name="unique_manager_member"
             )
         ]
 

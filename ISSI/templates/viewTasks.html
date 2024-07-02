@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tasks</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Task Tracker</h2>
+
+<label for="project">Project</label>
+<select name="project" id="project" onChange="onChange()">
+    <option value="None">-----</option>
+    {% for project in projects %}
+    <option value="{{project.id}}">{{project.name}}</option>
+    {% endfor %}
+</select>
+<a href="/statusReport/logout">Logout</a>
+
+<table>
+    <tr>
+        <th>Task</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Status</th>
+        <th>Accomplishments</th>
+        <th>Blockers</th>
+    </tr>
+    {% for task in tasks %}
+    <tr>
+        <td>{{task.taskName}}</td>
+        <td>{{task.startDate}}</td>
+        <td>{{task.endDate}}</td>
+        <td>{{task.status}}</td>
+        <td>{{task.accomplishments}}</td>
+        <td>{{task.blockers}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    async function onChange() {
+        try{
+            const project = document.getElementById("project").value;
+            {% comment %} console.log(project) {% endcomment %}
+            if (project !== "None") {
+                const response = await axios.get(`/statusReport/viewTasks?project=${project}`)
+            }
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+</script>
+
+</html>
