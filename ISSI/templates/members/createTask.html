@@ -1,0 +1,71 @@
+{% load static %}
+<body>
+<form id="form"  enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="token" id="token" value="{{token}}">
+    <input type="hidden" name="user" id="token" value="{{request.user.id}}">
+    <ul id="tasksLists" name="taskLists" style="list-style-type: none;">
+        <li id="task1" name="task1">
+            <label for="project1">Project</label>
+            <select name="project" className="project">
+                {% for key, value in projects.items %}
+                <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="taskName1">Task Name</label>
+            <input type="text"  name="taskName" placeholder="Task Name" required>
+
+            <label for="taskDescription1">Task Description</label>
+            <input type="text" id="taskDescription1" name="taskDescription" placeholder="Task Description" required>
+    
+            <label for="status1">Status of the Task</label>
+            <select name="status" id="status1">
+                <option value="completed">Completed</option>
+                <option value="progress">In progress</option>
+                <option value="start">YET-TO-START</option>
+            </select>
+        </li>
+    </ul>
+    <button type="button" onClick="addTaskRow()">Add One More Task</button>
+    <button type="submit">Save</button>
+</form>
+<a href="/statusReport/logout">Logout</a>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    let taskCounter = 1;
+
+    function addTaskRow() {
+        taskCounter++;
+        const tasksLists = document.getElementById('tasksLists');
+        const newTask = document.createElement('form');
+        newTask.setAttribute('id', 'task' + taskCounter);
+        newTask.setAttribute('name', 'task' + taskCounter);
+
+        newTask.innerHTML = `
+            <label for="project${taskCounter}">Project</label>
+            <select name="project" id="project${taskCounter}">
+                {% for key, value in projects.items %}
+                <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="taskName${taskCounter}">Task Name</label>
+            <input type="text" id="taskName${taskCounter}" name="taskName" placeholder="Task Name" required>
+
+            <label for="taskDescription${taskCounter}">Task Description</label>
+            <input type="text" id="taskDescription${taskCounter}" name="taskDescription" placeholder="Task Description" required>
+    
+            <label for="status${taskCounter}">Status of the Task</label>
+            <select name="status" id="status${taskCounter}">
+                <option value="completed">Completed</option>
+                <option value="progress">In progress</option>
+                <option value="start">YET-TO-START</option>
+            </select>
+        `;
+
+        tasksLists.appendChild(newTask);
+    }
+</script>
+</body>

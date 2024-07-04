@@ -48,13 +48,36 @@ class Tasks(models.Model):
     ]
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    startDate = models.DateField(default=timezone.now)
+    startDate = models.DateField(default=timezone.now,blank=True)
     endDate = models.DateField(default=timezone.now, blank=True)
-    taskName = models.TextField(unique=True)
+    taskName = models.CharField(default="Cusotm Task",max_length=100)
+    taskDescription = models.TextField(default="Custom Description")
     status = models.CharField(max_length=10, choices=STATUS, default="start")
-    accomplishments = models.TextField(blank=True)
-    blockers = models.TextField(blank=True)
-    document = models.FileField(blank=True)
+    editable=models.BooleanField(default=True)
+
+class Accomplishments(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    startDate = models.DateField(default=timezone.now,blank=True)
+    endDate = models.DateField(default=timezone.now, blank=True)
+    accomplishments=models.TextField(default="Custom Accomplishment")
+    editable=models.BooleanField(default=True)
+
+class Blockers(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    startDate = models.DateField(default=timezone.now,blank=True)
+    endDate = models.DateField(default=timezone.now, blank=True)
+    blockers=models.TextField(default="Custom Blockers")
+    editable=models.BooleanField(default=True)
+
+class Documents(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    startDate = models.DateField(default=timezone.now,blank=True)
+    endDate = models.DateField(default=timezone.now, blank=True)
+    document=models.TextField("path to file")
+    editable=models.BooleanField(default=True)
 
 # Managers table
 class Managers(models.Model):

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser,Projects,Tasks,Managers,Projectteams
+from .models import CustomUser,Projects,Tasks,Managers,Projectteams,Accomplishments,Blockers,Documents
 
 
 class Accountadmin(UserAdmin):
@@ -19,4 +19,6 @@ admin.site.register(Tasks)
 admin.site.register(Projects)
 admin.site.register(Managers)
 admin.site.register(Projectteams)
-
+admin.site.register(Accomplishments)
+admin.site.register(Blockers)
+admin.site.register(Documents)
