@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import  CustomUser,Projects,Tasks,Projectteams
+from .models import  CustomUser,Projects,Tasks,Projectteams,Accomplishments,Blockers
 from django.contrib.admin.widgets import AdminDateWidget, AdminTimeWidget, AdminSplitDateTime
 
 # class EmployeeForm(forms.ModelForm):
@@ -38,4 +38,14 @@ class UserForm(UserCreationForm):
 class CreateTask(forms.ModelForm):
     class Meta:
         model=Tasks
+        fields="__all__"
+
+class CreateAccomplishment(forms.ModelForm):
+    class Meta:
+        model=Accomplishments
+        fields="__all__"
+
+class CreateBlockers(forms.ModelForm):
+    class Meta:
+        model=Blockers
         fields="__all__"

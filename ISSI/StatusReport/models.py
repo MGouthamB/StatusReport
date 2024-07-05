@@ -1,7 +1,7 @@
 from django.db import models
 from datetime import date
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
-from django.utils import timezone
+from datetime import date
 
 # User table with default User fields and added extra fields
 class CustomUser(AbstractUser, PermissionsMixin):
@@ -48,8 +48,8 @@ class Tasks(models.Model):
     ]
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    startDate = models.DateField(default=timezone.now,blank=True)
-    endDate = models.DateField(default=timezone.now, blank=True)
+    startDate = models.DateField(default=date.today(),blank=True)
+    endDate = models.DateField(default=date.today(), blank=True)
     taskName = models.CharField(default="Cusotm Task",max_length=100)
     taskDescription = models.TextField(default="Custom Description")
     status = models.CharField(max_length=10, choices=STATUS, default="start")
@@ -58,24 +58,24 @@ class Tasks(models.Model):
 class Accomplishments(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    startDate = models.DateField(default=timezone.now,blank=True)
-    endDate = models.DateField(default=timezone.now, blank=True)
+    startDate = models.DateField(default=date.today(),blank=True)
+    endDate = models.DateField(default=date.today(), blank=True)
     accomplishments=models.TextField(default="Custom Accomplishment")
     editable=models.BooleanField(default=True)
 
 class Blockers(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    startDate = models.DateField(default=timezone.now,blank=True)
-    endDate = models.DateField(default=timezone.now, blank=True)
+    startDate = models.DateField(default=date.today(),blank=True)
+    endDate = models.DateField(default=date.today(), blank=True)
     blockers=models.TextField(default="Custom Blockers")
     editable=models.BooleanField(default=True)
 
 class Documents(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    startDate = models.DateField(default=timezone.now,blank=True)
-    endDate = models.DateField(default=timezone.now, blank=True)
+    startDate = models.DateField(default=date.today(),blank=True)
+    endDate = models.DateField(default=date.today(), blank=True)
     document=models.TextField("path to file")
     editable=models.BooleanField(default=True)
 

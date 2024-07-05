@@ -1,43 +1,47 @@
-
 {% load static %}
-
-<form id="form" enctype="multipart/form-data" onSubmit="onSubmit(event)">
-    <input type="hidden" name="user" id="user" value="{{request.user.id}}">
+<body>
+<h4>Accomplishments are optional</h4>
+<form id="form"  enctype="multipart/form-data" onSubmit="onSubmit(event)">
     <input type="hidden" name="token" id="token" value="{{token}}">
-    <ul id="accomplishments" name="accomplishments" style="list-style-type: none;">
-        <li id="accomplishmentList1" name="accomplishmentList1">
+    <input type="hidden" name="user" id="user" value="{{request.user.id}}">
+    <ul id="tasksLists" name="taskLists" style="list-style-type: none;">
+        <li id="task1" name="task1">
             <label for="project1">Project</label>
-            <select name="project1" id="project1">
+            <select name="project" class="project">
                 {% for key, value in projects.items %}
                 <option value="{{ key }}">{{ value }}</option>
                 {% endfor %}
             </select>
             
-            <label for="accomplishment1">Accomplishment</label>
-            <input type="text" id="accomplishment1" name="accomplishment1" placeholder="Accomplishment">
+            <label for="accomplishments">Accomplishment</label>
+            <input type="text" class="accomplishment" name="accomplishments" placeholder="Enter your accomplishments" required>
         </li>
     </ul>
     <button type="button" onClick="addTaskRow()">Add One More Accomplishment</button>
     <button type="submit">Save</button>
 </form>
+<a href="/statusReport/logout">Logout</a>
+
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     let taskCounter = 2;
-    const listElement = document.getElementById("accomplishmentList1")
+    const listElement = document.getElementById("tasksLists"); // Corrected the ID
     function addTaskRow() {
         const childListElement = document.createElement("li");
-        childListElement.id = `accomplishment${taskCounter}`;
-        childListElement.name = `accomplishment${taskCounter}`;
-        childListElement.innerHTML = `<label for="project${taskCounter}">Project</label>
-            <select name="project${taskCounter}" id="project${taskCounter}">
+        childListElement.id = `task${taskCounter}`;
+        childListElement.name = `task${taskCounter}`;
+        childListElement.innerHTML = `
+            <hr>
+            <label for="project${taskCounter}">Project</label>
+            <select name="project" class="project">
                 {% for key, value in projects.items %}
                 <option value="{{ key }}">{{ value }}</option>
                 {% endfor %}
             </select>
-            <label for="accomplishment${taskCounter}">Accomplishment</label>
-            <input type="text" id="accomplishment${taskCounter}" name="accomplishment${taskCounter}" placeholder="Accomplishment">
+            <label for="accomplishments">Task Name</label>
+            <input type="text" class="accomplishment" name="accomplishments" placeholder="Enter your accomplishments" required>
 
-            <button  type="button" id="${taskCounter}" onClick="removeRow(event)">
+            <button type="button" id="${taskCounter}" onClick="removeRow(event)">
                 <span aria-hidden="true">&times;</span>
             </button>`;
         listElement.appendChild(childListElement);
@@ -45,29 +49,36 @@
     }
 
     function removeRow(event){
-        list = document.getElementById(`accomplishment${event.currentTarget.id}`);
+        const list = document.getElementById(`task${event.currentTarget.id}`);
         listElement.removeChild(list);
     }
-
-    function onSubmit(event) {
-        let data={}
-        for (let i = 1; i < taskCounter; i++) {
-            tempData={
-                user:document.getElementById("user").value,
-                project: document.getElementById(`project${i}`).value,
-                accomplishments:document.getElementById(`accomplishment${i}`).value,
+   
+    function onSubmit(event){
+        event.preventDefault()
+        const user=document.getElementById("user").value
+        const token=document.getElementById("token").value
+        const projects=document.getElementsByClassName("project")
+        const accomplishments = document.getElementsByClassName("accomplishment")
+        data={}
+        for(let i=0;i<projects.length;i++){
+            const tempData={
+                user: user,
+                project:projects[i].value,
+                accomplishments:accomplishments[i].value,
             }
-            data[`accomplishment${i}`]=tempData
+            data[i+1]=tempData
         }
-        const token = document.getElementById("token").value;
         const headers = {
             "X-CSRFToken": token,
             "Content-Type": "application/json"
         };
         
         axios.post("/statusReport/createAccomplishments", data, { headers })
-            .then(response => {console.log(response)})
-            .catch(error => console.log(error));
+            .then(response => {
+                window.location.reload()
+                alert("Accomplishments Created successfully. You can view and edit your tasks until you finalize and submit")
+            })
+            .catch(error => alert(error));
     }
 </script>
-<a href="/statusReport/logout">Logout</a>
+</body>
