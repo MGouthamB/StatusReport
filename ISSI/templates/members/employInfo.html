@@ -1,186 +1,67 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Status Report</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .header {
-            background-color: #990000;
-            color: white;
-            padding: 10px 20px;
-            position: relative;
-            text-align: center;
-        }
-        .header h1, .header h2 {
-            margin: 0;
-        }
-        .profile {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-        }
-        .profile img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-        .profile .dropdown {
-            display: none;
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background-color: white;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-        }
-        .profile:hover .dropdown {
-            display: block;
-        }
-        .profile .dropdown a {
-            color: black;
-            padding: 8px 16px;
-            text-decoration: none;
-            display: block;
-        }
-        .sidebar {
-            background-color: #f4f4f4;
-            width: 200px;
-            height: calc(100vh - 61px);
-            float: left;
-            padding: 20px 0;
-            box-sizing: border-box;
-        }
-        .sidebar p {
-            margin: 10px 0;
-            padding-left: 20px;
-            font-weight: bold;
-            color: #333;
-            cursor: pointer;
-        }
-        .sidebar p:hover {
-            background-color: #ddd;
-        }
-        .sidebar p.active {
-            background-color: white;
-            border-left: 5px solid #990000;
-        }
-        .content {
-            margin-left: 200px;
-            padding: 20px;
-        }
-        .content h2 {
-            text-align: center;
-            color: #333;
-        }
-        .dashboard {
-            text-align: center;
-            margin-top: 50px;
-            color: #333;
-        }
-        .form-group {
-            margin: 20px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .form-group label {
-            width: 200px;
-            font-weight: bold;
-        }
-        .form-group input, .form-group select {
-            width: calc(100% - 220px);
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .employee-text {
-            position: absolute;
-            left: 20px;
-            top: 20px;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-        }
-    </style>
+    <title>Employee Information</title>
+    <link rel="stylesheet" href="{% static "css/members.css" %}">
 </head>
 <body>
-    <div class="header">
-        <div class="employee-text">EMPLOYEE</div>
-        <div class="logo">
-            <img src="" alt="Logo" style="vertical-align: left;">
-        </div>
-        <h1>International Software Systems, Inc.</h1>
-        <h2>Status Report</h2>
-        <div class="profile">
-            <img src="" alt="Profile">
-            <div class="dropdown">
-                <a href="#">Change Password</a>
-                <a href="#">Logout</a>
-            </div>
-        </div>
+
+<div class="header">
+    <img src="{% static 'images/logo.png' %}" alt="ISSI Logo" width="50" height="50">
+    <span>International Software Systems, Inc. Employee Information</span>
+    <div class="profile">
+        <span>Profile</span>
+        <a href="#">Change Password</a>
+        <a href="/statusReport/logout">Logout</a>
     </div>
+</div>
+
+<div class="container">
     <div class="sidebar">
-        <p class="active" onclick="showSection('dashboard')">Dashboard</p>
-        <p onclick="showSection('employee-info')">Employee Info</p>
-        <p onclick="showSection('task')">Task</p>
-        <p onclick="showSection('accomplishments')">Accomplishments</p>
-        <p onclick="showSection('concerns-blockers')">Concerns/Blockers</p>
+        <a href="/statusReport/viewTasks">Dashboard</a>
+        <a href="/statusReport/employInfo">Employee Info</a>
+        <a href="/statusReport/createTask">Task</a>
+        <a href="/statusReport/createAccomplishments">Accomplishments</a>
+        <a href="/statusReport/createBlockers">Concerns/Blockers</a>
+        <a href="/statusReport/documents">Documents</a>
+        <a href="/statusReport/finalSubmit">Finalize and Submit</a>
     </div>
     <div class="content">
-        <div id="dashboard" class="section">
-            <h2>My Dashboard</h2>
-            <div class="dashboard">
-                <p>Welcome (Insert User Name)</p>
-            </div>
-        </div>
-        <div id="employee-info" class="section" style="display:none;">
-            <h2>Employee Information</h2>
+        <h2>Employee Information</h2>
+        <div id="employee-info" class="section">
             <div class="form-group">
-                <label for="name">First & Last Name:</label>
-                <input type="text" id="name" name="name">
+                <label for="name"><b>Full Name:</b></label>
+                <p>{{request.user.first_name}} {{request.user.last_name}}</p>
             </div>
             <div class="form-group">
-                <label for="employment-type">Employment Type:</label>
-                <input type="text" id="employment-type" name="employment-type">
+                <label for="employment-type"><b>Employment Type:</b></label>
+                <p>{{request.user.empType}}</p>
             </div>
             <div class="form-group">
-                <label for="email">Email ID:</label>
-                <input type="email" id="email" name="email">
+                <label for="department"><b>Department:</b></label>
+                <p>{{request.user.empDept}}</p>
             </div>
             <div class="form-group">
-                <label for="department">Department:</label>
-                <input type="text" id="department" name="department">
+                <label for="project-name"><b>Projects</b></label>
+                <ul>
+                    {% for key,value in projects.items %}
+                        <li>{{value}}</li>
+                    {% endfor %}
+                </ul>
             </div>
             <div class="form-group">
-                <label for="project-name">Project Name:</label>
-                <input type="text" id="project-name" name="project-name">
-            </div>
-            <div class="form-group">
-                <label for="manager">Project/General/HR Manager:</label>
-                <select id="manager" name="manager">
-                    <option>Auto Fill</option>
-                </select>
+                <label for="manager"><b>Project Manager:</b></label>
+                <ul>
+                    {% for key,value in managers.items %}
+                        <li>{{value}}</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
-    <script>
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(function(section) {
-                section.style.display = 'none';
-            });
-            document.getElementById(sectionId).style.display = 'block';
-
-            document.querySelectorAll('.sidebar p').forEach(function(tab) {
-                tab.classList.remove('active');
-            });
-            document.querySelector(`.sidebar p[onclick="showSection('${sectionId}')"]`).classList.add('active');
-        }
-    </script>
+</div>
 </body>
 </html>

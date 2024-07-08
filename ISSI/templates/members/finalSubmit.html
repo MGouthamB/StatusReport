@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #800000;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-left h2 {
+            margin-left: 10px;
+        }
+        .header-middle {
+            text-align: center;
+            flex-grow: 1;
+        }
+        .header-right {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .header-right img {
+            border-radius: 100%;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #c5c2c2;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .sidebar {
+            width: 200px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            position: fixed;
+            top: 115px;
+            bottom: 0;
+            left: 0;
+        }
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        .sidebar a:hover {
+            background-color: #c5c2c2;
+        }
+        .content {
+            margin-left: 220px; /* Adjusted to account for sidebar width */
+            padding: 70px;
+            text-align: center; /* Centering text */
+        }
+        .content button{
+            background-color: rgb(62, 162, 230);
+            font-size: 16px; /* Increased font size */
+            padding: 20px 30px; /* Increased padding */
+            border: none;
+            cursor: pointer;
+        }
+        .status-report {
+            margin-top: 20px;
+        }
+        .status-report span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function confirmSubmission() 
+        {
+            if (confirm("Are you sure you want to submit?"))
+            {
+                axios.get("/statusReport/submit")
+                .then((response)=>console.log(response))
+                .catch((error)=>console.log(error))
+                alert("Form submitted!");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img src="{% static "images/logo.png" %}" alt="Logo" width="100" height="70">
+            <h2>Employee</h2>
+        </div>
+        <div class="header-middle">
+            <h2>International Software Systems, Inc.<br>Status Report</h2>
+        </div>
+        <div class="header-right">
+            <div class="dropdown">
+                <div style="display: flex; align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                    </svg><span style="margin-left: 5px;">Profile</span>
+                    
+                    
+                </div>
+                <div class="dropdown-content">
+                    <a href="#">Change Password</a>
+                    <a href="/statusReport/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <a href="/statusReport/viewTasks">Dashboard</a>
+        <a href="/statusReport/employInfo">Employee Info</a>
+        <a href="/statusReport/createTask">Task</a>
+        <a href="/statusReport/createAccomplishments">Accomplishments</a>
+        <a href="/statusReport/createBlockers">Concerns/Blockers</a>
+        <a href="/statusReport/documents">Documents</a>
+        <a href="/statusReport/finalSubmit">Finalize and Submit</a>
+    </div>
+    
+    <div class="content">
+        <h2>Finalize & Submit</h2>
+        <p> Are you sure you want to submit?</p>
+        <button onclick="confirmSubmission()">Finalize & Submit</button>
+    </div>
+</body>
+</html>

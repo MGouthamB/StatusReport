@@ -76,7 +76,7 @@ class Documents(models.Model):
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
     startDate = models.DateField(default=date.today(),blank=True)
     endDate = models.DateField(default=date.today(), blank=True)
-    document=models.TextField("path to file")
+    document=models.TextField("path to file",blank=True)
     editable=models.BooleanField(default=True)
 
 # Managers table

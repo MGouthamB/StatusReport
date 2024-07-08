@@ -1,41 +1,77 @@
-{% load static %}
-<body>
-<form id="form"  enctype="multipart/form-data" onSubmit="onSubmit(event)">
-    {% csrf_token %}
-    <input type="hidden" name="token" id="token" value="{{token}}">
-    <input type="hidden" name="user" id="user" value="{{request.user.id}}">
-    <ul id="tasksLists" name="taskLists" style="list-style-type: none;">
-        <li id="task1" name="task1">
-            <label for="project1">Project</label>
-            <select name="project" class="project">
-                {% for key, value in projects.items %}
-                <option value="{{ key }}">{{ value }}</option>
-                {% endfor %}
-            </select>
-            
-            <label for="taskName1">Task Name</label>
-            <input type="text" class="taskName" name="taskName" placeholder="Task Name" required>
 
-            <label for="taskDescription1">Task Description</label>
-            <input type="text" class="taskDescription" name="taskDescription" placeholder="Task Description" required>
-    
-            <label for="status1">Status of the Task</label>
-            <select name="status" class="status">
-                <option value="completed">Completed</option>
-                <option value="progress">In progress</option>
-                <option value="start">YET-TO-START</option>
-            </select>
-        </li>
-    </ul>
-    <button type="button" onClick="addTaskRow()">Add One More Task</button>
-    <button type="submit">Save</button>
-</form>
-<a href="/statusReport/logout">Logout</a>
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Status Report</title>
+    <link rel="stylesheet" href="{% static "css/members.css" %}">
+</head>
+<body>
+
+<div class="header">
+    <img src="{% static 'images/logo.png' %}" alt="ISSI Logo" width="50" height="50">
+    <span>International Software Systems, Inc. Status Report</span>
+    <div class="profile">
+        <span>Profile</span>
+        <a href="#">Change Password</a>
+        <a href="/statusReport/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="sidebar">
+        <a href="/statusReport/viewTasks">Dashboard</a>
+        <a href="/statusReport/employInfo">Employee Info</a>
+        <a href="/statusReport/createTask">Task</a>
+        <a href="/statusReport/createAccomplishments">Accomplishments</a>
+        <a href="/statusReport/createBlockers">Concerns/Blockers</a>
+        <a href="/statusReport/documents">Documents</a>
+        <a href="/statusReport/finalSubmit">Finalize and Submit</a>
+    </div>
+    <div class="content">
+        <h2>Task Manager</h2>
+        <form id="form" enctype="multipart/form-data" onSubmit="onSubmit(event)">
+            <input type="hidden" name="token" id="token" value="{{token}}">
+            <input type="hidden" name="user" id="user" value="{{request.user.id}}">
+            <ul id="tasksLists" name="taskLists" style="list-style-type: none;">
+                <li id="task1" name="task1">
+                    <label for="project1">Project</label>
+                    <select name="project" class="project">
+                        {% for key, value in projects.items %}
+                        <option value="{{ key }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="taskName1">Task Name</label>
+                    <input type="text" class="taskName" name="taskName" placeholder="Task Name" required>
+
+                    <label for="taskDescription1">Task Description</label>
+                    <input type="text" class="taskDescription" name="taskDescription" placeholder="Task Description" required>
+
+                    <label for="status1">Status of the Task</label>
+                    <select name="status" class="status">
+                        <option value="completed">Completed</option>
+                        <option value="progress">In progress</option>
+                        <option value="start">YET-TO-START</option>
+                    </select>
+                </li>
+            </ul>
+            <div class="form-buttons">
+                <button type="button" onClick="addTaskRow()">Add One More Task</button>
+                <button type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <script>
-    let taskCounter = 2;
-    const listElement = document.getElementById("tasksLists"); // Corrected the ID
+    let taskCounter = 2; 
+    const listElement = document.getElementById("tasksLists");
+
     function addTaskRow() {
         const childListElement = document.createElement("li");
         childListElement.id = `task${taskCounter}`;
@@ -48,6 +84,7 @@
                 <option value="{{ key }}">{{ value }}</option>
                 {% endfor %}
             </select>
+
             <label for="taskName${taskCounter}">Task Name</label>
             <input type="text" class="taskName" name="taskName" placeholder="Task Name" required>
 
@@ -67,41 +104,43 @@
         taskCounter++;
     }
 
-    function removeRow(event){
+    function removeRow(event) {
         const list = document.getElementById(`task${event.currentTarget.id}`);
         listElement.removeChild(list);
     }
-   
-    function onSubmit(event){
-        event.preventDefault()
-        const user=document.getElementById("user").value
-        const token=document.getElementById("token").value
-        const projects=document.getElementsByClassName("project")
-        const taskNames = document.getElementsByClassName("taskName")
-        const taskDescriptions=document.getElementsByClassName("taskDescription")
-        const statuses = document.getElementsByClassName("status")
-        data={}
-        for(let i=0;i<projects.length;i++){
-            const tempData={
+
+    function onSubmit(event) {
+        event.preventDefault();  
+        const user = document.getElementById("user").value;
+        const token = document.getElementById("token").value;
+        const projects = document.getElementsByClassName("project");
+        const taskNames = document.getElementsByClassName("taskName");
+        const taskDescriptions = document.getElementsByClassName("taskDescription");
+        const statuses = document.getElementsByClassName("status");
+        const data = {};
+        for (let i = 0; i < projects.length; i++) {
+            const tempData = {
                 user: user,
-                project:projects[i].value,
-                taskName:taskNames[i].value,
-                taskDescription:taskDescriptions[i].value,
-                status : statuses[i].value
-            }
-            data[i+1]=tempData
+                project: projects[i].value,
+                taskName: taskNames[i].value,
+                taskDescription: taskDescriptions[i].value,
+                status: statuses[i].value,
+                editable:true
+            };
+            data[i + 1] = tempData;
         }
         const headers = {
             "X-CSRFToken": token,
             "Content-Type": "application/json"
         };
-        
+
         axios.post("/statusReport/createTask", data, { headers })
             .then(response => {
-                window.location.reload()
-                alert("Tasks Created successfully. You can view and edit your tasks until you finalize and submit")
+                window.location.reload();
+                alert("Tasks Created successfully. You can view and edit your tasks until you finalize and submit");
             })
             .catch(error => alert(error));
     }
 </script>
 </body>
+</html>

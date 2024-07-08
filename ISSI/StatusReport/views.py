@@ -8,6 +8,10 @@ from django.contrib import messages
 from .models import Projectteams,Tasks,Managers,Accomplishments,Blockers,Documents
 from datetime import date
 import json
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+import os
+from pathlib import Path
 
 
 def projectsDict(request):
@@ -22,6 +26,7 @@ def projectManagers(projects):
     managersDict={}
     for i in managers:
         managersDict[i.manager.id]=i.manager.first_name+" "+i.manager.last_name
+    print(managersDict)
     return managersDict
 
 def loginUser(request):
@@ -32,10 +37,9 @@ def loginUser(request):
             login(request,form.get_user())
             projects=projectsDict(request)
             managers=projectManagers(projects)
-            print(managers)
             request.session["projects"]=projects
             request.session["managers"]=managers
-            return redirect("/statusReport/employInfo")
+            return redirect("/statusReport/viewTasks")
         else:
             print(form.errors.as_text())
             messages.error(request,form.errors.as_text())
@@ -43,7 +47,16 @@ def loginUser(request):
 
 @login_required(login_url="/statusReport/login")
 def displayEmpInfo(request):
-    return render(request,"members/employInfo.html",{"projects":request.session["projects"]})
+    return render(request,"members/employInfo.html",{"projects":request.session["projects"],"managers":request.session["managers"]})
+
+@login_required(login_url="/statusReport/login")
+def viewTasks(request):
+    value=date.today()
+    if request.method=="POST":
+        # print(request.POST["startDate"])
+        value=request.POST["startDate"]
+    tasks=Tasks.objects.filter(startDate=value).select_related("project")
+    return render(request,"members/viewTasks.html",{"tasks":tasks})
 
 @login_required(login_url="/statusReport/login")
 def createTask(request):
@@ -88,14 +101,70 @@ def createBlockers(request):
     return render(request,"members/createBlockers.html",{"projects":request.session["projects"],"token":request.COOKIES['csrftoken'],"userid":request.user.id})
 
 @login_required(login_url="/statusReport/login")
+def upload_files(request):
+    if request.method == 'POST':
+        try:
+            files = request.FILES.getlist('files')
+            file_paths = []
+            for file in files:
+                fs = FileSystemStorage()
+                filename = fs.save(file.name, file)
+                file_path = fs.url(filename)
+                file_paths.append(filename)
+
+            docs = Documents.objects.get(user=request.user.id)
+
+            print(','.join(file_paths))
+
+            if len(file_paths)>=1:
+                print(',' if len(docs.document)>1 else '' + ','.join(file_paths))
+                docs.document += ','+ ','.join(file_paths) if len(docs.document)>1 else '' + ','.join(file_paths)
+                docs.save()
+
+            return redirect('/statusReport/documents')
+
+        except Exception as e:
+            print(e)
+            return redirect('/statusReport/documents')
+
+    return render(request, 'login.html')
+
+@login_required(login_url="/statusReport/login")
+def documents(request):
+    docs = Documents.objects.get(user=request.user.id)
+    documents = []
+    if docs.document!='':
+        for id,doc in enumerate(docs.document.split(',')):
+            documents.append({'file_name':doc,'project':'GMS','id':id+1})
+    return render(request,"members/documents.html",{"documents":documents})
+
+@login_required(login_url="/statusReport/login")
+def delete_document(request):
+    try:
+        BASE_DIR = Path(__file__).resolve().parent.parent
+        docs = Documents.objects.get(user=request.user.id)
+        documents = docs.document.split(',')
+        file_name = documents[int(request.GET['id'])-1]
+        del documents[int(request.GET['id'])-1]
+        docs.document = ','.join(documents)
+        docs.save()
+        os.remove(os.path.join(BASE_DIR,"files\\"+file_name))
+        return redirect('/statusReport/documents')
+
+    except Exception as e:
+        print(e)
+        return redirect('/statusReport/documents')
+
+@login_required(login_url="/statusReport/login")
+def submit(request):
+    updatedTaskCount = Tasks.objects.filter(startDate=date.today(),editable=True).update(editable=False)
+    updatedAccomplishmentsCount=Accomplishments.objects.filter(startDate=date.today(),editable=True).update(editable=False)
+    updatedBlockersCount=Blockers.objects.filter(startDate=date.today(),editable=True).update(editable=False)
+    return redirect("/statusReport/viewTasks")
+
+@login_required(login_url="/statusReport/login")
 def finalSubmit(request):
-    updatedTaskCount = Tasks.objects.filter(startDate=date.today()).update(editable=False)
-    # tasks=Tasks.objects.filter(startDate=date.today())
-    # for task in tasks:
-    #     print(task.editable)
-    updatedAccomplishmentsCount=Accomplishments.objects.filter(startDate=date.today()).update(editable=False)
-    updatedBlockersCount=Blockers.objects.filter(startDate=date.today()).update(editable=False)
-    return HttpResponse("Succesfull")
+    return render(request,"members/finalSubmit.html")
 
 @login_required(login_url="/statusReport/login")
 def logoutUser(request):

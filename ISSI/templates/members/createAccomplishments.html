@@ -1,31 +1,63 @@
+<!DOCTYPE html>
 {% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accomplishments</title>
+    <link rel="stylesheet" href="{% static "css/members.css" %}">
+</head>
 <body>
-<h4>Accomplishments are optional</h4>
-<form id="form"  enctype="multipart/form-data" onSubmit="onSubmit(event)">
-    <input type="hidden" name="token" id="token" value="{{token}}">
-    <input type="hidden" name="user" id="user" value="{{request.user.id}}">
-    <ul id="tasksLists" name="taskLists" style="list-style-type: none;">
-        <li id="task1" name="task1">
-            <label for="project1">Project</label>
-            <select name="project" class="project">
-                {% for key, value in projects.items %}
-                <option value="{{ key }}">{{ value }}</option>
-                {% endfor %}
-            </select>
-            
-            <label for="accomplishments">Accomplishment</label>
-            <input type="text" class="accomplishment" name="accomplishments" placeholder="Enter your accomplishments" required>
-        </li>
-    </ul>
-    <button type="button" onClick="addTaskRow()">Add One More Accomplishment</button>
-    <button type="submit">Save</button>
-</form>
-<a href="/statusReport/logout">Logout</a>
+
+<div class="header">
+    <img src="{% static 'images/logo.png' %}" alt="ISSI Logo" width="50" height="50">
+    <span>International Software Systems, Inc. Status Report</span>
+    <div class="profile">
+        <span>Profile</span>
+        <a href="#">Change Password</a>
+        <a href="/statusReport/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="sidebar">
+        <a href="/statusReport/viewTasks">Dashboard</a>
+        <a href="/statusReport/employInfo">Employee Info</a>
+        <a href="/statusReport/createTask">Task</a>
+        <a href="/statusReport/createAccomplishments">Accomplishments</a>
+        <a href="/statusReport/createBlockers">Concerns/Blockers</a>
+        <a href="/statusReport/documents">Documents</a>
+        <a href="/statusReport/finalSubmit">Finalize and Submit</a>
+    </div>
+    <div class="content">
+        <h2>Accomplishments (OPTIONAL)</h2>
+        <form id="form" enctype="multipart/form-data" onSubmit="onSubmit(event)">
+            <input type="hidden" name="token" id="token" value="{{token}}">
+            <input type="hidden" name="user" id="user" value="{{request.user.id}}">
+            <ul id="tasksLists" name="taskLists" style="list-style-type: none;">
+                <li id="task1" name="task1">
+                    <label for="project1">Project</label>
+                    <select name="project" class="project">
+                        {% for key, value in projects.items %}
+                        <option value="{{ key }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <label for="accomplishments">Accomplishment</label>
+                    <input type="text" class="accomplishment" name="accomplishments" placeholder="Enter your accomplishments" required>
+                </li>
+            </ul>
+            <button type="button" onClick="addTaskRow()">Add One More Accomplishment</button>
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     let taskCounter = 2;
-    const listElement = document.getElementById("tasksLists"); // Corrected the ID
+    const listElement = document.getElementById("tasksLists");
+    
     function addTaskRow() {
         const childListElement = document.createElement("li");
         childListElement.id = `task${taskCounter}`;
@@ -38,7 +70,7 @@
                 <option value="{{ key }}">{{ value }}</option>
                 {% endfor %}
             </select>
-            <label for="accomplishments">Task Name</label>
+            <label for="accomplishments">Accomplishment</label>
             <input type="text" class="accomplishment" name="accomplishments" placeholder="Enter your accomplishments" required>
 
             <button type="button" id="${taskCounter}" onClick="removeRow(event)">
@@ -55,18 +87,18 @@
    
     function onSubmit(event){
         event.preventDefault()
-        const user=document.getElementById("user").value
-        const token=document.getElementById("token").value
-        const projects=document.getElementsByClassName("project")
-        const accomplishments = document.getElementsByClassName("accomplishment")
-        data={}
-        for(let i=0;i<projects.length;i++){
-            const tempData={
+        const user = document.getElementById("user").value;
+        const token = document.getElementById("token").value;
+        const projects = document.getElementsByClassName("project");
+        const accomplishments = document.getElementsByClassName("accomplishment");
+        let data = {};
+        for (let i = 0; i < projects.length; i++){
+            const tempData = {
                 user: user,
-                project:projects[i].value,
-                accomplishments:accomplishments[i].value,
+                project: projects[i].value,
+                accomplishments: accomplishments[i].value,
             }
-            data[i+1]=tempData
+            data[i + 1] = tempData;
         }
         const headers = {
             "X-CSRFToken": token,
@@ -75,10 +107,11 @@
         
         axios.post("/statusReport/createAccomplishments", data, { headers })
             .then(response => {
-                window.location.reload()
-                alert("Accomplishments Created successfully. You can view and edit your tasks until you finalize and submit")
+                window.location.reload();
+                alert("Accomplishments created successfully. You can view and edit your tasks until you finalize and submit.");
             })
             .catch(error => alert(error));
     }
 </script>
 </body>
+</html>
