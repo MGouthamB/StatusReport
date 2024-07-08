@@ -22,3 +22,6 @@ ISSI/StatusReport/__pycache__/models.cpython-311.pyc
 ISSI/StatusReport/__pycache__/admin.cpython-311.pyc
 ISSI/ISSI/__pycache__/urls.cpython-311.pyc
 ISSI/ISSI/__pycache__/settings.cpython-311.pyc
+ISSI/StatusReport/__pycache__/models.cpython-311.pyc
+*.pyc
+*.__pycache__
