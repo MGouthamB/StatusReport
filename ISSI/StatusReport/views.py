@@ -53,23 +53,30 @@ def displayEmpInfo(request):
 def viewTasks(request):
     value=date.today()
     if request.method=="POST":
-        print(request.POST["starDate"])
+        # print(request.POST["starDate"])
         value=request.POST["starDate"]
-    tasks=Tasks.objects.filter(startDate=value).select_related("project")
-    return render(request,"members/viewTasks.html",{"tasks":tasks,"startDate":value})
+    tasks=list(Tasks.objects.filter(startDate=value).select_related("project"))
+    for task in tasks:
+        print(task.startDate)
+    return render(request,"members/viewTasks.html",{"tasks":tasks,"startDate":str(value)})
 
 @login_required(login_url="/statusReport/login")
 def createTask(request):
     if request.method=="POST":
         tasks_dict=json.loads(request.body) 
         for task in tasks_dict:
-            form=CreateTask(tasks_dict[task])
-            if form.is_valid():
-                form.save()
+            if tasks_dict[task]["startDate"]>str(date.today()):
+                response = HttpResponse(status=400,reason="Future dates are not accepted")
+                return response
             else:
-                print(form.errors.as_text())
-                return HttpResponse.__init__(status=400,reason=form.errors.as_text())
-        return HttpResponse("Successful")
+                form=CreateTask(tasks_dict[task])
+                if form.is_valid():
+                    form.save()
+                else:
+                    # print(form.errors.as_text())
+                    response = HttpResponse(status=400,reason=form.errors.as_data())
+                    return response
+        return HttpResponse(status=200,reason="Successfull")
     return render(request,"members/createTask.html",{"projects":request.session["projects"],"token":request.COOKIES['csrftoken'],"userid":request.user.id})
 
 @login_required(login_url="/statusReport/login")
@@ -77,13 +84,18 @@ def createAccomplishments(request):
     if request.method=="POST":
         tasks_dict=json.loads(request.body) #converting json bytes data to dict type
         for task in tasks_dict:
-            form=CreateAccomplishment(tasks_dict[task])
-            if form.is_valid():
-                form.save()
+            if tasks_dict[task]["startDate"]>str(date.today()):
+                response = HttpResponse(status=400,reason="Future dates are not accepted")
+                return response
             else:
-                print(form.errors.as_text())
-                return HttpResponse(form.errors.as_text())
-        return HttpResponse("Successful")
+                form=CreateAccomplishment(tasks_dict[task])
+                if form.is_valid():
+                    form.save()
+                else:
+                    # print(form.errors.as_text())
+                    response = HttpResponse(status=400,reason=form.errors.as_data())
+                    return response
+        return HttpResponse(status=200,reason="Successful")
     return render(request,"members/createAccomplishments.html",{"projects":request.session["projects"],"token":request.COOKIES['csrftoken'],"userid":request.user.id})
 
 @login_required(login_url="/statusReport/login")
@@ -91,13 +103,18 @@ def createBlockers(request):
     if request.method=="POST":
         tasks_dict=json.loads(request.body) #converting json bytes data to dict type
         for task in tasks_dict:
-            form=CreateBlockers(tasks_dict[task])
-            if form.is_valid():
-                form.save()
+            if tasks_dict[task]["startDate"]>str(date.today()):
+                response = HttpResponse(status=400,reason="Future dates are not accepted")
+                return response
             else:
-                print(form.errors.as_text())
-                return HttpResponse(form.errors.as_text())
-        return HttpResponse("Successful")
+                form=CreateBlockers(tasks_dict[task])
+                if form.is_valid():
+                    form.save()
+                else:
+                    # print(form.errors.as_text())
+                    response = HttpResponse(status=400,reason=form.errors.as_data())
+                    return response
+        return HttpResponse(status=200,reason="Successful")
     return render(request,"members/createBlockers.html",{"projects":request.session["projects"],"token":request.COOKIES['csrftoken'],"userid":request.user.id})
 
 @login_required(login_url="/statusReport/login")

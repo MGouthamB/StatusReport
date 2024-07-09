@@ -59,17 +59,11 @@
 <script>
     let taskCounter = 2;
     const listElement = document.getElementById("tasksLists");
-    const dateObj= new Date()
-    let date = dateObj.getDate();
-    let day = dateObj.getDay();
-    let year = dateObj.getFullYear();
-    if(date<"10"){
-        date="0"+date
-    }
-    if(day<"10"){
-        day="0"+day
-    }
-    const finalDate=year+"-"+day+"-"+date;
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    const finalDate=yyyy+"-"+mm+"-"+dd;
     const dates = document.getElementsByClassName("date");
     dates[0].setAttribute("max",finalDate)
     function addTaskRow() {

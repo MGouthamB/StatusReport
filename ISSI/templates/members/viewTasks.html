@@ -173,6 +173,13 @@
     </div>
 </body>
 <script>
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+    var yyyy = today.getFullYear();
+    const finalDate=yyyy+"-"+mm+"-"+dd;
+    const dates = document.getElementsByClassName("date");
+    dates[0].setAttribute("max",finalDate)
     function myfunc(){
         document.getElementById("form").submit()
     }
