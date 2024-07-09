@@ -48,7 +48,7 @@ class Tasks(models.Model):
     ]
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    startDate = models.DateField(default=date.today(),blank=True)
+    startDate = models.DateField(default=date.today())
     endDate = models.DateField(default=date.today(), blank=True)
     taskName = models.CharField(default="Cusotm Task",max_length=100)
     taskDescription = models.TextField(default="Custom Description")
@@ -58,7 +58,7 @@ class Tasks(models.Model):
 class Accomplishments(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    startDate = models.DateField(default=date.today(),blank=True)
+    startDate = models.DateField(default=date.today())
     endDate = models.DateField(default=date.today(), blank=True)
     accomplishments=models.TextField(default="Custom Accomplishment")
     editable=models.BooleanField(default=True)
@@ -66,7 +66,7 @@ class Accomplishments(models.Model):
 class Blockers(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    startDate = models.DateField(default=date.today(),blank=True)
+    startDate = models.DateField(default=date.today())
     endDate = models.DateField(default=date.today(), blank=True)
     blockers=models.TextField(default="Custom Blockers")
     editable=models.BooleanField(default=True)
@@ -74,7 +74,7 @@ class Blockers(models.Model):
 class Documents(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    startDate = models.DateField(default=date.today(),blank=True)
+    startDate = models.DateField(default=date.today())
     endDate = models.DateField(default=date.today(), blank=True)
     document=models.TextField("path to file",blank=True)
     editable=models.BooleanField(default=True)

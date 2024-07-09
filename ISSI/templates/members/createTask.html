@@ -43,6 +43,9 @@
                         <option value="{{ key }}">{{ value }}</option>
                         {% endfor %}
                     </select>
+                    
+                    <label for="date">Date</label>
+                    <input type="date" class="date" name="starDate"  required>
 
                     <label for="taskName1">Task Name</label>
                     <input type="text" class="taskName" name="taskName" placeholder="Task Name" required>
@@ -85,13 +88,16 @@
                 {% endfor %}
             </select>
 
-            <label for="taskName${taskCounter}">Task Name</label>
+            <label for="date">Date</label>
+            <input type="date" class="date" name="starDate"  required>
+
+            <label for="taskName">Task Name</label>
             <input type="text" class="taskName" name="taskName" placeholder="Task Name" required>
 
-            <label for="taskDescription${taskCounter}">Task Description</label>
+            <label for="taskDescription">Task Description</label>
             <input type="text" class="taskDescription" name="taskDescription" placeholder="Task Description" required>
 
-            <label for="status${taskCounter}">Status of the Task</label>
+            <label for="status">Status of the Task</label>
             <select name="status" class="status">
                 <option value="completed">Completed</option>
                 <option value="progress">In progress</option>
@@ -114,6 +120,7 @@
         const user = document.getElementById("user").value;
         const token = document.getElementById("token").value;
         const projects = document.getElementsByClassName("project");
+        const dates = document.getElementsByClassName("date");
         const taskNames = document.getElementsByClassName("taskName");
         const taskDescriptions = document.getElementsByClassName("taskDescription");
         const statuses = document.getElementsByClassName("status");
@@ -122,6 +129,7 @@
             const tempData = {
                 user: user,
                 project: projects[i].value,
+                startDate:dates[i].value,
                 taskName: taskNames[i].value,
                 taskDescription: taskDescriptions[i].value,
                 status: statuses[i].value,

@@ -53,8 +53,7 @@ def displayEmpInfo(request):
 def viewTasks(request):
     value=date.today()
     if request.method=="POST":
-        # print(request.POST["startDate"])
-        value=request.POST["startDate"]
+        value=request.POST["starDate"]
     tasks=Tasks.objects.filter(startDate=value).select_related("project")
     return render(request,"members/viewTasks.html",{"tasks":tasks})
 

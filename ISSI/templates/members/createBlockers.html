@@ -42,6 +42,10 @@
                         <option value="{{ key }}">{{ value }}</option>
                         {% endfor %}
                     </select>
+
+                    <label for="date">Date</label>
+                    <input type="date" class="date" name="starDate"  required>
+
                     <label for="blockers">Concerns/Blockers</label>
                     <input type="text" class="blockers" name="blockers" placeholder="Enter your Concerns/Blockers" required>
                 </li>
@@ -64,12 +68,16 @@
         childListElement.name = `task${taskCounter}`;
         childListElement.innerHTML = `
             <hr>
-            <label for="project${taskCounter}">Project</label>
+            <label for="project">Project</label>
             <select name="project" class="project">
                 {% for key, value in projects.items %}
                 <option value="{{ key }}">{{ value }}</option>
                 {% endfor %}
             </select>
+
+            <label for="date">Date</label>
+            <input type="date" class="date" name="starDate"  required>
+
             <label for="blockers">Concerns/Blockers</label>
             <input type="text" class="blockers" name="blockers" placeholder="Enter your Concerns/Blockers" required>
             <button type="button" id="${taskCounter}" onClick="removeRow(event)">
@@ -89,6 +97,7 @@
         const user = document.getElementById("user").value;
         const token = document.getElementById("token").value;
         const projects = document.getElementsByClassName("project");
+        const dates = document.getElementsByClassName("date");
         const blockers = document.getElementsByClassName("blockers");
         const data = {};
 
@@ -96,6 +105,7 @@
             const tempData = {
                 user: user,
                 project: projects[i].value,
+                startDate:dates[i].value,
                 blockers: blockers[i].value
             };
             data[i + 1] = tempData;
