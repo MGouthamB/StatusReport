@@ -32,8 +32,6 @@
     <div class="content">
         <h2>Concerns/Blockers (OPTIONAL)</h2>
         <form id="form" enctype="multipart/form-data" onSubmit="onSubmit(event)">
-            <input type="hidden" name="token" id="token" value="{{token}}">
-            <input type="hidden" name="user" id="user" value="{{request.user.id}}">
             <ul id="tasksLists" name="taskLists" style="list-style-type: none;">
                 <li id="task1" name="task1">
                     <label for="project1">Project</label>
@@ -61,7 +59,19 @@
 <script>
     let taskCounter = 2;
     const listElement = document.getElementById("tasksLists");
-    
+    const dateObj= new Date()
+    let date = dateObj.getDate();
+    let day = dateObj.getDay();
+    let year = dateObj.getFullYear();
+    if(date<"10"){
+        date="0"+date
+    }
+    if(day<"10"){
+        day="0"+day
+    }
+    const finalDate=year+"-"+day+"-"+date;
+    const dates = document.getElementsByClassName("date");
+    dates[0].setAttribute("max",finalDate)
     function addTaskRow() {
         const childListElement = document.createElement("li");
         childListElement.id = `task${taskCounter}`;
@@ -76,7 +86,7 @@
             </select>
 
             <label for="date">Date</label>
-            <input type="date" class="date" name="starDate"  required>
+            <input type="date" class="date" name="starDate" max=${finalDate} required>
 
             <label for="blockers">Concerns/Blockers</label>
             <input type="text" class="blockers" name="blockers" placeholder="Enter your Concerns/Blockers" required>
@@ -94,16 +104,13 @@
 
     function onSubmit(event) {
         event.preventDefault();
-        const user = document.getElementById("user").value;
-        const token = document.getElementById("token").value;
         const projects = document.getElementsByClassName("project");
         const dates = document.getElementsByClassName("date");
         const blockers = document.getElementsByClassName("blockers");
         const data = {};
-
         for (let i = 0; i < projects.length; i++) {
             const tempData = {
-                user: user,
+                user: "{{userid}}",
                 project: projects[i].value,
                 startDate:dates[i].value,
                 blockers: blockers[i].value
@@ -112,7 +119,7 @@
         }
 
         const headers = {
-            "X-CSRFToken": token,
+            "X-CSRFToken": "{{token}}",
             "Content-Type": "application/json"
         };
 

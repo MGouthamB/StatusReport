@@ -140,7 +140,7 @@
         <p>Welcome {{request.user.first_name}} {{request.user.last_name}}</p>
         <form id="form" method="post"  action="/statusReport/viewTasks">
             {% csrf_token %}
-            <input type="date" class="date" name="starDate" oninput="myfunc()">
+            <input type="date" class="date" name="starDate" value="{{startDate}}" oninput="myfunc()">
         </form>
         <div class="table">
             <table>

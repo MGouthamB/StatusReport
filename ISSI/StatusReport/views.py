@@ -53,21 +53,22 @@ def displayEmpInfo(request):
 def viewTasks(request):
     value=date.today()
     if request.method=="POST":
+        print(request.POST["starDate"])
         value=request.POST["starDate"]
     tasks=Tasks.objects.filter(startDate=value).select_related("project")
-    return render(request,"members/viewTasks.html",{"tasks":tasks})
+    return render(request,"members/viewTasks.html",{"tasks":tasks,"startDate":value})
 
 @login_required(login_url="/statusReport/login")
 def createTask(request):
     if request.method=="POST":
-        tasks_dict=json.loads(request.body) #converting json bytes data to dict type
+        tasks_dict=json.loads(request.body) 
         for task in tasks_dict:
             form=CreateTask(tasks_dict[task])
             if form.is_valid():
                 form.save()
             else:
                 print(form.errors.as_text())
-                return HttpResponse(form.errors.as_text())
+                return HttpResponse.__init__(status=400,reason=form.errors.as_text())
         return HttpResponse("Successful")
     return render(request,"members/createTask.html",{"projects":request.session["projects"],"token":request.COOKIES['csrftoken'],"userid":request.user.id})
 
